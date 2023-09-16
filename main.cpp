@@ -4,6 +4,9 @@
 // int& ref = var -> reference to the variable, like passing address of variable and dereferencing
 // cant change var later, always need int&
 
+#include "color.h"
+#include "vec3.h"
+
 #include <iostream>
 
 
@@ -25,25 +28,11 @@ int main() {
 
   // loop over each pixel to create a uv coords texture
   for (int j = 0; j < image_height; j++) {
-
     // print to standard log how many lines of the image still need to be renderd
     std::clog << "\rScanlines remaining: " << (image_height -j) << " " << std::flush;
-
     for (int i = 0; i < image_width; i++) {
-      // create colors for the current pixel, stored as double between 0 and 1
-      double r = double(i) / (image_width-1);
-      double g = double(j) / (image_height-1);
-      double b = 0;
-
-      // convert double (or maybe float eventually) to int between 0 and 255
-      int ir = static_cast<int>(255.999 * r);
-      int ig = static_cast<int>(255.999 * g);
-      int ib = static_cast<int>(255.999 * b);
-
-
-      // write a line with the current pixel color
-      std::cout << ir << " " << ig << " " << ib << "\n";
-
+      color pixel_color = color(double(i)/(image_width-1), double(j)/(image_height-1), 0);
+      write_color(std::cout, pixel_color);
     }
   }
 
