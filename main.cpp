@@ -4,42 +4,21 @@
 // int& ref = var -> reference to the variable, like passing address of variable and dereferencing
 // cant change var later, always need int&
 
+#include "rtweekend.h"
+
 #include "color.h"
-#include "vec3.h"
-#include "ray.h"
+#include "hittable.h"
+#include "hittable_list.h"
+#include "sphere.h"
 
 #include <iostream>
 
 
-double hit_sphere(const point3& center, double radius, const ray& r) {
-  // see section 5.1 for explanation of math -> https://raytracing.github.io/books/RayTracingInOneWeekend.html
-  vec3 oc = r.origin() - center;
-  auto a = r.direction().length_squared();
-  auto half_b = dot(oc, r.direction());
-  auto c = oc.length_squared() - radius*radius;
-  auto discriminant = half_b*half_b - a*c;
 
-
-  // simplifying the vector expression for a sphere with some origin we can check wether a point is inside it or not based on the discriminant of this simplified function
-  if (discriminant < 0) {
-    return -1.0;
-  } else {
-    return (-half_b - sqrt(discriminant)) / a;
-  }
-
-
-
-}
-
-
-color ray_color(const ray& r) {
-  // get the hit position of our sphere, retunrs -1 if no hit
-  auto t = hit_sphere(point3(0,0,-1), 0.5, r);
-
-  // if theres a hit get the normal vector at the point of intersection
-  if (t > 0.0) {
-    vec3 N = unit_vector(r.at(t) - vec3(0,0,-1));
-    return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
+color ray_color(const ray& r, const hittable& world) {
+  hit_record rec;
+  if (world.hit(r, 0, infinity, rec)) {
+    return 0.5 * (rec.normal + color(1,1,1));
   }
 
   vec3 unit_direction = unit_vector(r.direction());
@@ -57,6 +36,16 @@ int main() {
 
   // calculate the image height based on the widht and aspect ratio
   int image_height = static_cast<int>(image_width/aspect_ratio);
+
+
+  // World
+  hittable_list world;
+
+  world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
+  world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
+
+
+
 
   // Camera
   auto focal_length = 1.0;
@@ -101,9 +90,9 @@ int main() {
 
       // construct a ray and get color of it
       ray r(camera_center, ray_direction);
-      color pixel_color = ray_color(r);
 
       // write color to screen
+      color pixel_color = ray_color(r, world);
       write_color(std::cout, pixel_color);
     }
   }
