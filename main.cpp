@@ -14,16 +14,17 @@
 double hit_sphere(const point3& center, double radius, const ray& r) {
   // see section 5.1 for explanation of math -> https://raytracing.github.io/books/RayTracingInOneWeekend.html
   vec3 oc = r.origin() - center;
-  auto a = dot(r.direction(), r.direction());
-  auto b = 2.0 * dot(oc, r.direction());
-  auto c = dot(oc, oc) - radius*radius;
-  auto discriminant = b*b - 4*a*c;
+  auto a = r.direction().length_squared();
+  auto half_b = dot(oc, r.direction());
+  auto c = oc.length_squared() - radius*radius;
+  auto discriminant = half_b*half_b - a*c;
 
 
+  // simplifying the vector expression for a sphere with some origin we can check wether a point is inside it or not based on the discriminant of this simplified function
   if (discriminant < 0) {
     return -1.0;
   } else {
-    return (-b - sqrt(discriminant) ) / (2.0*a);
+    return (-half_b - sqrt(discriminant)) / a;
   }
 
 
@@ -32,7 +33,10 @@ double hit_sphere(const point3& center, double radius, const ray& r) {
 
 
 color ray_color(const ray& r) {
+  // get the hit position of our sphere, retunrs -1 if no hit
   auto t = hit_sphere(point3(0,0,-1), 0.5, r);
+
+  // if theres a hit get the normal vector at the point of intersection
   if (t > 0.0) {
     vec3 N = unit_vector(r.at(t) - vec3(0,0,-1));
     return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
