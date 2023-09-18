@@ -38,8 +38,8 @@ inline double random_double(double min, double max) {
 // Common Headers
 
 
-#include "ray.h"
-#include "vec3.h"
 #include "interval.h"
+#include "vec3.h"
+#include "ray.h"
 
 #endif // RTWEEKEND_H_
