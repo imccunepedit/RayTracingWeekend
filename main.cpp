@@ -13,11 +13,13 @@
 #include "sphere.h"
 
 
+
+
 int main() {
 
   hittable_list world;
 
-  auto material_ground = make_shared<lambertian>(color(0.4,0.3,0.4));
+  auto material_ground = make_shared<lambertian>(color(1.4,1.3,1.4));
   auto material_center = make_shared<lambertian>(color(0.0,0.2,0.8));
   auto material_left = make_shared<metal>(color(0.8,0.8,0.8), 0.3);
   auto material_right = make_shared<metal>(color(0.8,0.2,0.6), 1.0);
@@ -37,5 +39,7 @@ int main() {
   cam.max_depth = 50;
 
   cam.render(world);
+
+  return 0;
 
 }

@@ -29,11 +29,18 @@ void write_color(std::ostream &out, color pixel_color, int samples_per_pixel) {
   g = linear_to_gamma(g);
   b = linear_to_gamma(b);
 
-  // translate the color to 0-255 and write it out seperatred by spaces
+
   static const interval intensity(0.000, 0.999);
-  out << static_cast<int>(256 * intensity.clamp(r)) << " "
-      << static_cast<int>(256 * intensity.clamp(g)) << " "
-      << static_cast<int>(256 * intensity.clamp(b)) << "\n";
+
+  int r_i = static_cast<int>(256 * intensity.clamp(r));
+  int g_i = static_cast<int>(256 * intensity.clamp(g));
+  int b_i = static_cast<int>(256 * intensity.clamp(b));
+
+  // translate the color to 0-255 and write it out seperatred by spaces
+  // out << r_i << " " << g_i << " " << b_i << "\n";
+  out << r_i << g_i << b_i << 255;
+
+  // out << std::hex << (((r_i & 0xff) << 24) + ((g_i & 0xff) << 16) + ((b_i & 0xff) << 8)  + (0xff));
 }
 
 
