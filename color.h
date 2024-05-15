@@ -37,8 +37,8 @@ void write_color(std::ostream &out, color pixel_color, int samples_per_pixel) {
   int b_i = static_cast<int>(256 * intensity.clamp(b));
 
   // translate the color to 0-255 and write it out seperatred by spaces
-  // out << r_i << " " << g_i << " " << b_i << "\n";
-  out << r_i << g_i << b_i << 255;
+  out << r_i << " " << g_i << " " << b_i << "\n";
+  //out << r_i << g_i << b_i << 255;
 
   // out << std::hex << (((r_i & 0xff) << 24) + ((g_i & 0xff) << 16) + ((b_i & 0xff) << 8)  + (0xff));
 }
