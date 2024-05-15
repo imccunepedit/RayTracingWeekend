@@ -6,6 +6,7 @@
 
 #include "rtweekend.h"
 
+#include "bvh.h"
 #include "camera.h"
 #include "color.h"
 #include "hittable_list.h"
@@ -62,7 +63,7 @@ int main() {
   world.add(make_shared<sphere>(point3(4,1,0), 1, material3));
 
 
-
+  world = hittable_list(make_shared<bvh_node>(world));
 
   camera cam;
 
