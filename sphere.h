@@ -7,11 +7,19 @@
 
 class sphere : public hittable {
   public:
+    //static sphere
     sphere(point3 _center, double _radius, shared_ptr<material> _material)
-      : center(_center), radius(_radius), mat(_material) {}
+      : center1(_center), radius(_radius), mat(_material), is_moving(false) {}
+
+    //moving
+    sphere(point3 _center1, point3 _center2, double _radius, shared_ptr<material> _material)
+      : center1(_center1), radius(_radius), mat(_material), is_moving(true) {
+      center_vec = _center2-center1;
+    }
 
     bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
       // a b and c for quadratic formula
+      point3 center = is_moving ? sphere_center(r.time()) : center1;
       vec3 oc = r.origin() - center;
       auto a = r.direction().length_squared();
       auto half_b = dot(oc, r.direction());
@@ -42,9 +50,16 @@ class sphere : public hittable {
 
 
   private:
-    point3 center;
+    point3 center1;
     double radius;
     shared_ptr<material> mat;
+    bool is_moving;
+    vec3 center_vec;
+
+    point3 sphere_center(double time) const {
+      return center1 + time * center_vec;
+    }
+
 };
 
 #endif // SPHERE_H_
