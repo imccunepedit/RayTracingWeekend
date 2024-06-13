@@ -5,6 +5,7 @@
 
 #include "hittable_list.h"
 #include "vec3.h"
+#include <memory>
 
 class hit_record;
 using color = vec3;
@@ -13,9 +14,13 @@ class material {
   public:
     virtual ~material() = default;
 
+    virtual color emitted() const {
+      return color(0,0,0);
+    }
+
     virtual bool scatter (
         const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered
-) const = 0;
+) const {return 0;}
 };
 
 
@@ -95,6 +100,18 @@ class dielectric : public material {
       r0 = r0*r0;
       return r0 + (1-r0)*pow((1-cosine),5);
     }
+};
+
+class light : public material {
+  public:
+    light(const color& a) : emission(a) {}
+
+    color emitted() const override {
+      return emission;
+    }
+
+  private:
+    color emission;
 };
 
 

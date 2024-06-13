@@ -23,6 +23,7 @@ class camera {
     double defocus_angle = 0;
     double focus_dist = 10;
 
+    color background = color(0,0,0);
 
     void render(const hittable& world) {
       initialize();
@@ -130,18 +131,20 @@ class camera {
 
       if (depth <= 0) return color(0,0,0);
 
-      if (world.hit(r, interval(0.001, infinity), rec)) {
-        ray scattered;
-        color attenuation;
-        if (rec.mat->scatter(r, rec, attenuation, scattered))
-          return attenuation * ray_color(scattered, depth - 1, world);
-        return color(0,0,0);
-      }
 
-      vec3 unit_direction = unit_vector(r.direction());
-      // the y coord of our direction goes from -1 to 1 but lerp needs from 0 to 1
-      auto a = 0.5*(unit_direction.y() + 1.0);
-      return (1.0-a) * color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+      if (!world.hit(r, interval(0.001, infinity), rec)) {
+        return background;
+      }
+      ray scattered;
+      color attenuation;
+      color emission = rec.mat->emitted();
+
+      if (!rec.mat->scatter(r, rec, attenuation, scattered))
+        return emission;
+
+      color color_from_scatter =  attenuation * ray_color(scattered, depth - 1, world);
+      return emission + color_from_scatter;
+
     }
 };
 

@@ -19,6 +19,7 @@ class vec3 {
     vec3() : e{0,0,0} {}
     // and a vec 3 with 3 values specified
     vec3(double e0, double e1, double e2) : e{e0, e1, e2} {};
+    vec3(double e0) : e{e0, e0, e0} {};
 
     // expose the three elements of our vector as x, y, and z
     double x() const { return e[0]; }
